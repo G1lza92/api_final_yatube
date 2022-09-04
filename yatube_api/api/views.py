@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
-from posts.models import Follow, Group, Post
-from rest_framework import filters, viewsets
-from rest_framework.pagination import LimitOffsetPagination
+from posts.models import Follow, Group, Post                    # для Андрея: создал файл .isort.cfg и добавил src_paths = src,tests
+from rest_framework import filters, mixins, viewsets            # но Импорты остались такими же, по этому не очень понимаю, что нужно настроить,
+from rest_framework.pagination import LimitOffsetPagination     # чтобы импорты выводились правильно
 from rest_framework.permissions import IsAuthenticated
 
 from .permissions import IsAuthorOrReadOnly
@@ -39,7 +39,11 @@ class CommentViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user, post=post)
 
 
-class FollowViewSet(viewsets.ModelViewSet):
+class FollowViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    viewsets.GenericViewSet
+):
     queryset = Follow.objects.all()
     serializer_class = FollowSerializer
     permission_classes = (IsAuthenticated,)

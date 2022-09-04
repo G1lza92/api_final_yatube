@@ -1,3 +1,4 @@
+from drf_extra_fields.fields import Base64ImageField
 from posts.models import Comment, Follow, Group, Post, User
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
@@ -6,6 +7,7 @@ from rest_framework.validators import UniqueTogetherValidator
 
 class PostSerializer(serializers.ModelSerializer):
     author = SlugRelatedField(slug_field='username', read_only=True)
+    image = Base64ImageField(required=False, allow_null=True)
 
     class Meta:
         fields = '__all__'
@@ -44,7 +46,6 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Follow
-
         validators = [UniqueTogetherValidator(
             queryset=Follow.objects.all(),
             fields=('user', 'following')
